@@ -176,7 +176,8 @@ if __name__ == "__main__":
     
 
     resource_group_name = "groupidname"
-    location = "westus"
+    location0 = "westus"
+    location1 = "centralus"
     vnet_name0 = "virtual_network_first0"
     address_prefix0 = "10.0.0.0/16"
     address_prefix1 = "10.1.0.0/16"
@@ -223,12 +224,12 @@ if __name__ == "__main__":
     resource_client = ResourceManagementClient(credential, subscription_id)
     network_client = NetworkManagementClient(credential, subscription_id)
     compute_client = ComputeManagementClient(credential, subscription_id)
-    create_resource_group(resource_client, resource_group_name, location)
+    create_resource_group(resource_client, resource_group_name, location0)
 
 
 
     nsg_params = NetworkSecurityGroup()
-    nsg_params.location = location
+    nsg_params.location = location0
     nsg_params.security_rules = [SecurityRule(
             id="testrule",
             name=sec_rule_name,
@@ -241,28 +242,31 @@ if __name__ == "__main__":
             direction="inbound",
             priority=4000,
             )]
-    poller = network_client.network_security_groups.begin_create_or_update(resource_group_name, "testnsg", parameters=nsg_params)
+    poller = network_client.network_security_groups.begin_create_or_update(resource_group_name, "network_security_group", parameters=nsg_params)
     nsg_result = poller.result()
 
-    poller1 = network_client.network_security_groups.begin_create_or_update(resource_group_name, "testnsg1", parameters=nsg_params)
+    nsg_params.location = location1
+    print("sa", nsg_params)
+
+    poller1 = network_client.network_security_groups.begin_create_or_update(resource_group_name, "network_security_group1", parameters=nsg_params)
     nsg_result1 = poller1.result()
+    print("result 1", nsg_result1)
 
-
-    create_virtual_network(network_client, resource_group_name, vnet_name0, location, address_prefix0)
+    create_virtual_network(network_client, resource_group_name, vnet_name0, location0, address_prefix0)
     #network_security_group = create_network_security_rule(network_client, resource_group_name,"testnsg", sec_rule_name,sec_rule_params)
     subnet_result = create_subnet(network_client, resource_group_name, vnet_name0, subnet_name0 , address_prefix_subnet0, nsg_result)
-    ip_address_result= create_ip_address(network_client, resource_group_name, ip_name0, location)
-    nic_result = create_nic_or_network_interface_client(network_client, nic_name0, location, resource_group_name,
+    ip_address_result= create_ip_address(network_client, resource_group_name, ip_name0, location0)
+    nic_result = create_nic_or_network_interface_client(network_client, nic_name0, location0, resource_group_name,
         ip_config_name0, subnet_result, ip_address_result)
-    create_virtual_machine(compute_client,resource_group_name, vm_name0, location,"satish", "satish@KUMAR", nic_result)
+    create_virtual_machine(compute_client,resource_group_name, vm_name0, location0,"satish", "satish@KUMAR", nic_result)
     
     
-    create_virtual_network(network_client, resource_group_name, vnet_name1, location, address_prefix1)
+    create_virtual_network(network_client, resource_group_name, vnet_name1, location1, address_prefix1)
     subnet_result1 = create_subnet(network_client, resource_group_name, vnet_name1, subnet_name1 , address_prefix_subnet1, nsg_result1)
-    ip_address_result1= create_ip_address(network_client, resource_group_name, ip_name1, location)
-    nic_result1 = create_nic_or_network_interface_client(network_client, nic_name1, location, resource_group_name,
+    ip_address_result1= create_ip_address(network_client, resource_group_name, ip_name1, location1)
+    nic_result1 = create_nic_or_network_interface_client(network_client, nic_name1, location1, resource_group_name,
         ip_config_name1, subnet_result1, ip_address_result1)
-    create_virtual_machine(compute_client,resource_group_name, vm_name1, location,"satish", "satish@KUMAR", nic_result1)
+    create_virtual_machine(compute_client,resource_group_name, vm_name1, location1,"satish", "satish@KUMAR", nic_result1)
 
     create_peer(network_client, resource_group_name, vnet_name0, vnet_peer_name0,vnet_name1)
     create_peer(network_client, resource_group_name, vnet_name1, vnet_peer_name1, vnet_name0)
