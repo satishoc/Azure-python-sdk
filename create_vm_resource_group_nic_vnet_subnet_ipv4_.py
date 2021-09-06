@@ -114,11 +114,22 @@ def create_virtual_machine(compute_client,resource_group_name, vm_name, location
                 "hardware_profile": {
                     "vm_size": "Standard_DS1_v2"
                     },
-                "os_profile": {
-                    "computer_name": vm_name,
-                    "admin_username": user_name,
-                    "admin_password": password
-                    },
+                  "osProfile": {
+      "adminUsername": "abc",
+      "computerName": "myVM",
+      "linuxConfiguration": {
+        "ssh": {
+          "publicKeys": [
+            {
+              "path": "/home/abc/.ssh/authorized_keys",
+              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4BLcozOZqiDybqvZtD56it3FLECLih9Y0sFeyipt2MkPF4fJ4K15Nfyt0TGYmVtGopQZReizX0Git6NVpvbvbh49x+xEXnydEU0lsSn1lkhfF1YGlCy2OUhGJNa2CmQxBFmTbYSzXjStJpRKpCIc9aUUhYVKGYCLKd5C+oBSCcEXCMlBjAaCDeCG26mFNFVMpo/GXl6EhPhSgKL58WfEHP84aPwIV3ulnjKyIWpguM6CWZqAwQSiFZ6ms7rWVMVc1wGCQ707JZkzcamsqtAFhHzSzWka4qR6I/NVK+/eKf+LQBzJpQFpU22XF2/OJbM+X0lt7b9Y3eNBLyXuvpSp8Gg4hjs9nkhp27KtFfbbFSa0dPBXrWNmHdL9EE4/ynoamYWgdz1hlj5r1fhsDpeKEHwi0Cl5uzihWL1JoV6n3Pj3GT5ZMOYxO3CxGdSwcR1Njur64aGQ3Apwg83UegkEFMDteClDTzbVE1/iAuNbzP9+iywhqY+te8dBibiqXMI8agde0SGF1AgTuFvd3HPGZcJdRutztIQBlqNPTFF1vsxe5+EGNUAHM/PE/7+jqy75LiutdlF1HphdK4vy1oz+cVvGwYstU+T3e6v4khoPCMGS2w105xdV8CxPslPD41pYxStYfCL1PuuErncssKXh9a3NpKP5Q8u5Y1ahKpFr3LQ== satish@satishoc"
+            }
+          ]
+        },
+        "disablePasswordAuthentication": True
+      }
+    },
+
                 "network_profile": {
                     "network_interfaces": [{
                         "id": nic_result.id,
@@ -178,8 +189,8 @@ if __name__ == "__main__":
     ip_config_name = "ip_coinfiguration_name"
     nic_name = "First-nicname"
     vm_name= "script-machine"
-    user_name="scriptmachine@oneconvergence12COM"
-    password = "Oneconvergence@123PASS"
+    user_name="scriptmachine12COM"
+    password = "Oneconvergence23PASS"
 
 
     credential, subscription_id = get_credentials()
@@ -202,5 +213,5 @@ if __name__ == "__main__":
     finally:
         print('\nDelete Resource Group')
         #When you delete a resource group, all of its resources are also deleted
-        delete_resource_group = resource_client.resource_groups.begin_delete(resource_group_name)
-        delete_resource_group.result()
+        #delete_resource_group = resource_client.resource_groups.begin_delete(resource_group_name)
+        #delete_resource_group.result()
